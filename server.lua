@@ -17,29 +17,29 @@ acePerms = {
 }
 
 local function has_value (tab, val)
-    for index, value in ipairs(tab) do
-        if value == val then
-            return true
-        end
+  for index, value in ipairs(tab) do
+    if value == val then
+      return true
     end
-
-    return false
+  end
+  
+  return false
 end
 
 function PlayerIdentifier(type, id)
-    local identifiers = {}
-    local numIdentifiers = GetNumPlayerIdentifiers(id)
-
-    for a = 0, numIdentifiers do
-        table.insert(identifiers, GetPlayerIdentifier(id, a))
+  local identifiers = {}
+  local numIdentifiers = GetNumPlayerIdentifiers(id)
+  
+  for a = 0, numIdentifiers do
+    table.insert(identifiers, GetPlayerIdentifier(id, a))
+  end
+  
+  for b = 1, #identifiers do
+    if string.find(identifiers[b], type, 1) then
+      return identifiers[b]
     end
-
-    for b = 1, #identifiers do
-        if string.find(identifiers[b], type, 1) then
-            return identifiers[b]
-        end
-    end
-    return false
+  end
+  return false
 end
 
 roles = {}
@@ -65,22 +65,22 @@ AddEventHandler("playerConnecting", function()
   local steamid = string.sub(tostring(PlayerIdentifier("steam", src)), 7)
   roles[steamid] = {}
   for k, v in ipairs(GetPlayerIdentifiers(src)) do
-			if string.sub(v, 1, string.len("discord:")) == "discord:" then
-				identifierDiscord = v
-			end
-	end
-
+    if string.sub(v, 1, string.len("discord:")) == "discord:" then
+      identifierDiscord = v
+    end
+  end
+  
   if identifierDiscord then
-			local roleIDs = exports.discord_perms:GetRoles(src)
-			if not (roleIDs == false) then
-        for i = 1, #acePerms do
-					for j = 1, #roleIDs do
-            table.insert(roles[steamid], roleIDs[j])
-						if (tostring(acePerms[i][1]) == tostring(roleIDs[j])) then
-							ExecuteCommand("add_principal identifier.steam:" .. steamid .. " " .. acePerms[i][2])
-						end
-					end
-				end
-			end
-		end
+    local roleIDs = exports.discord_perms:GetRoles(src)
+    if not (roleIDs == false) then
+      for i = 1, #acePerms do
+        for j = 1, #roleIDs do
+          table.insert(roles[steamid], roleIDs[j])
+          if (tostring(acePerms[i][1]) == tostring(roleIDs[j])) then
+            ExecuteCommand("add_principal identifier.steam:" .. steamid .. " " .. acePerms[i][2])
+          end
+        end
+      end
+    end
+  end
 end)
